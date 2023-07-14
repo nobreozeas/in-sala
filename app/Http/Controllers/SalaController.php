@@ -53,4 +53,70 @@ class SalaController extends Controller
             return response()->json(['msg' => $e->getMessage()], 500);
         }
     }
+
+    public function listar(Request $request)
+    {
+
+        $salas = Sala::select('salas.*');
+
+
+
+        $orders = [
+            'id',
+            'nome',
+            '',
+            '',
+            '',
+            '',
+            '',
+        ];
+
+        $salas = $salas->orderBy($orders[$request->order[0]['column']], $request->order[0]['dir'])->paginate($request->length, ['*'], 'page', ($request->start / $request->length) + 1)->toArray();
+
+        return ["draw" => $request->draw, "recordsTotal" => (int) $salas['to'], "recordsFiltered" => (int) $salas['total'], "data" => $salas["data"]];
+    }
+
+    public function editar($id)
+    {
+        $sala = Sala::find($id);
+        return view('salas.editar', compact('sala'));
+    }
+
+    public function atualizar(Request $request, $id){
+
+        try {
+            DB::beginTransaction();
+            $sala = Sala::find($id);
+            if($request->imagem != "undefined"){
+                $nome_arquivo = $sala->imagem;
+            if ($request->hasFile('imagem')) {
+                $arquivo = $request->file('imagem');
+                //dar nome aleatorio com md5
+                $nome_arquivo = md5($arquivo->getClientOriginalName() . strtotime("now")) . "." . $arquivo->getClientOriginalExtension();
+                //salvar na pasta storage/app/public/arquivos
+                $arquivo->storeAs('public/arquivos', $nome_arquivo);
+            }
+            }
+
+            $sala->update([
+                'nome' => $request->nome,
+                'descricao' => $request->descricao,
+                'imagem' => $nome_arquivo ?? $sala->imagem,
+                'capacidade' => $request->capacidade,
+                'status_sala' => $request->status,
+                'comprimento' => $request->comprimento,
+                'largura' => $request->largura,
+                'id_usuario_alteracao' => auth()->user()->id,
+            ]);
+
+            DB::commit();
+
+            return response()->json(['msg' => 'Sala atualizada com sucesso!'], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['msg' => $e->getMessage()], 500);
+        }
+
+
+    }
 }

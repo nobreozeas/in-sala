@@ -14,9 +14,13 @@
     <link rel="stylesheet" href="{{ asset('assets/css/datatables.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/dataTables.bootstrap5.min.css') }}">
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/jquery-ui.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/jquery-ui.theme.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/jquery-ui.structure.min.css') }}" rel="stylesheet">
+
     @stack('styles')
 
-    
+
 
 
 

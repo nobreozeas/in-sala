@@ -7,37 +7,13 @@
 
         <div class="row my-3">
             <div class="col-md-12 d-flex justify-content-end">
-                <a class="btn btn-primary" href="{{route('salas.cadastrar')}}"><i class="fa fa-plus me-2" aria-hidden="true"></i>Adicionar</a>
+                <a class="btn btn-primary" href="{{ route('salas.cadastrar') }}"><i class="fa fa-plus me-2"
+                        aria-hidden="true"></i>Adicionar</a>
             </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="busca" id="busca"
-                        placeholder="Identificador, sequência inicial, sequência final" aria-label="Recipient's username"
-                        aria-describedby="basic-addon2">
-                    <span class="input-group-text" id="basic-addon2"><i class="fa-solid fa-magnifying-glass"></i></span>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <select name="status" id="status" class="form-select">
-                    <option value="">Situação</option>
-                    <option value="1">Pago</option>
-                    <option value="2">Pendente</option>
-                    <option value="3">Cancelado</option>
-                </select>
-            </div>
-
-
-            <div class="col-md-2">
-                <button class="btn" id="limpa_filtro"><i class="fa-regular fa-filter me-2"></i>Limpar</button>
-            </div>
-
         </div>
 
         <div>
-            <table id="tabela_encomenda" class="table table-responsive table-striped">
+            <table id="tabela_agendamento" class="table table-responsive table-striped">
                 <thead>
                     <tr>
                         <th class="">#</th>
@@ -55,10 +31,169 @@
             </table>
         </div>
 
-
-
     </div>
 @endsection
 @push('scripts')
+    <script>
+        $(document).ready(function() {
+            var tabela = $('#tabela_agendamento').DataTable({
+                "searching": false,
+                "width": "100%",
+                "order": [0, "DESC"],
+                "processing": true,
+                "serverSide": true,
+                "bLengthChange": false,
+                "responsive": true,
+                "lenhtChange": false,
+                "language": {
+                    "url": "{{ asset('assets/js/pt-BR.json') }}"
+                },
+                "pageLength": 50,
+                drawCallback: function(e) {
+                    $('[data-toggle="tooltip"]').tooltip('destroy');
+                    $('[data-toggle="popover"]').popover('destroy');
 
+                    $('[data-bs-toggle="tooltip"]').tooltip();
+                    $('[data-bs-toggle="popover"]').popover({
+                        html: true
+                    });
+
+                },
+                "ajax": {
+                    url: "{{ route('salas.listar') }}",
+                    type: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    data: function(data) {
+
+                    }
+                },
+                "columns": [{
+                        data: null,
+                        className: 'align-middle',
+                        render: function(data) {
+                            console.log(data);
+
+                            return data.id;
+                        }
+                    }, {
+                        data: null,
+                        className: 'align-middle text-center',
+                        render: function(data) {
+                            return data.nome;
+                        }
+                    }, {
+                        data: null,
+                        orderable: false,
+                        className: 'text-center align-middle',
+                        render: function(data) {
+                            return data.largura;
+                        }
+                    }, {
+                        data: null,
+                        orderable: false,
+                        className: 'text-center align-middle',
+                        render: function(data) {
+                            return data.comprimento;
+                        }
+                    }, {
+                        data: null,
+                        orderable: false,
+                        className: 'text-center align-middle',
+                        render: function(data) {
+                            return data.capacidade;
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        className: 'text-center align-middle',
+                        render: function(data) {
+                            let situacao = '';
+                            let motivo = data.motivo_cancelamento;
+                            if (data.status_sala == '1') {
+                                situacao = `<span class="badge bg-success">Ativo</span>`;
+                            } else {
+                                situacao =
+                                    `<span class="badge bg-danger">Inativo</span>`;
+                            }
+                            return situacao;
+                        }
+                    },
+                    {
+                        data: null,
+                        orderable: false,
+                        className: 'text-center align-middle',
+                        render: function(data) {
+                            let acoes = '';
+
+
+                            acoes +=
+                                `<a href="{{route('salas.editar', '')}}/${data.id}" class="btn btn-sm btn-primary me-2 btn_visualizar" data-bs-toggle="tooltip" data-bs-placement="top" title="Visualizar"><i class="fa fa-eye" aria-hidden="true"></i></a>`;
+                                acoes +=
+                                    `<button type="button" class="btn btn-sm btn-danger btn_deletar" data-id="${data.id}" data-bs-toggle="tooltip" data-bs-placement="top" title="Remover"><i class="fa fa-trash" aria-hidden="true"></i></button>`;
+
+
+                            return acoes;
+                        }
+
+                    },
+
+                ]
+            });
+
+            $('body').on('click', '.btn_deletar', function(){
+                let id = $(this).attr('data-id');
+
+                Swal.fire({
+                    title: 'Deseja realmente remover?',
+                    text: "Não será possível reverter esta ação!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sim, remover!',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `{{ route('salas.deletar', '') }}/${id}`,
+                            type: "get",
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+
+                            success: function(data) {
+                                console.log(data);
+                                // if (data.status == 'sucesso') {
+                                //     Swal.fire(
+                                //         'Removido!',
+                                //         'Registro removido com sucesso.',
+                                //         'success'
+                                //     );
+                                //     tabela.ajax.reload();
+                                // } else {
+                                //     Swal.fire(
+                                //         'Erro!',
+                                //         'Ocorreu um erro ao remover o registro.',
+                                //         'error'
+                                //     );
+                                // }
+                            },
+                            error: function(data) {
+                                console.log(data);
+                                Swal.fire(
+                                    'Erro!',
+                                    'Ocorreu um erro ao remover o registro.',
+                                    'error'
+                                );
+                            }
+                        });
+                    }
+                })
+
+            })
+        })
+    </script>
 @endpush

@@ -124,6 +124,24 @@
             $('#btn_add').on('click', function(event) {
                 event.preventDefault();
 
+                //verifica se todos os campos foram preenchidos
+                let sala = $('#sala').val();
+                let data = $('#data').val();
+                let horario_inicial = $('.horario_inicial').val();
+                let horario_final = $('.horario_final').val();
+
+                if (sala == '' || data == '' || horario_inicial == '' || horario_final == '') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro!',
+                        text: 'Preencha todos os campos',
+                        confirmButtonText: 'Ok',
+                        confirmButtonColor: '#3085d6',
+
+                    });
+                    return false;
+                }
+
                 let dados = {
                     sala: $('#sala').val(),
                     data: $('#data').val(),
@@ -166,30 +184,31 @@
                     },
                     success: function(data) {
                         console.log(data);
-                        // if (data.status == 'sucesso') {
-                        //     Swal.fire({
-                        //         icon: 'success',
-                        //         title: 'Sucesso!',
-                        //         text: data.msg,
-                        //         showConfirmButton: false,
-                        //         timer: 1500
-                        //     }).then((result) => {
-                        //         window.location.href = "{{ route('horarios.index') }}";
-                        //     });
-                        // } else {
-                        //     Swal.fire({
-                        //         icon: 'error',
-                        //         title: 'Erro!',
-                        //         text: data.msg,
-                        //         showConfirmButton: false,
-                        //         timer: 1500
-                        //     });
-                        // }
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sucesso!',
+                            text: data.msg,
+                            confirmButtonText: 'Ok',
+                            confirmButtonColor: '#3085d6',
+                        }).then((result) => {
+                            window.location.href = "{{ route('horarios.index') }}";
+                        });
+
                     },
                     error: function(error){
                         console.log(error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro!',
+                            text: error.responseJSON.msg,
+                            confirmButtonText: 'Ok',
+                            confirmButtonColor: '#3085d6',
+
+                        });
                     }
                 });
+
+
             });
 
 

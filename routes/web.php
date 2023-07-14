@@ -25,9 +25,10 @@ Route::prefix('/')->middleware('auth')->group(function(){
         Route::get('/', [AgendamentoController::class,'index'])->name('agendamentos.index');
         Route::get('/cadastrar', [AgendamentoController::class,'cadastrar'])->name('agendamentos.cadastrar');
         Route::post('/salvar', [AgendamentoController::class,'salvar'])->name('agendamentos.salvar');
-        Route::get('/editar/{id}', [AgendamentoController::class,'editar'])->name('agendamentos.editar');
-        Route::post('/atualizar/{id}', [AgendamentoController::class,'atualizar'])->name('agendamentos.atualizar');
         Route::get('/excluir/{id}', [AgendamentoController::class,'excluir'])->name('agendamentos.excluir');
+        Route::post('/listar', [AgendamentoController::class,'listar'])->name('agendamentos.listar');
+        Route::get('/cancelar/{id}', [AgendamentoController::class,'cancelar'])->name('agendamentos.cancelar');
+        Route::get('/visualizar/{id}', [AgendamentoController::class,'visualizar'])->name('agendamentos.visualizar');
     });
 
     Route::prefix('salas')->group(function(){
@@ -36,8 +37,9 @@ Route::prefix('/')->middleware('auth')->group(function(){
         Route::post('/salvar', [SalaController::class,'salvar'])->name('salas.salvar');
         Route::get('/editar/{id}', [SalaController::class,'editar'])->name('salas.editar');
         Route::post('/atualizar/{id}', [SalaController::class,'atualizar'])->name('salas.atualizar');
-        Route::get('/excluir/{id}', [SalaController::class,'excluir'])->name('salas.excluir');
+        Route::get('/deletar/{id}', [SalaController::class,'deletar'])->name('salas.deletar');
         Route::post('/listar', [SalaController::class,'listar'])->name('salas.listar');
+
 
     });
 

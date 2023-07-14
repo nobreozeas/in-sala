@@ -1,4 +1,5 @@
 <script src="{{ asset('assets/js/jquery-3.6.1.min.js') }}"></script>
+<script src="{{ asset('assets/js/jquery-ui.min.js') }}"></script>
 <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/js/select2.full.min.js') }}"></script>
 <script src="{{ asset('assets/js/pt-BR.js') }}"></script>

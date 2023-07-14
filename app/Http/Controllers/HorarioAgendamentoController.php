@@ -70,7 +70,13 @@ class HorarioAgendamentoController extends Controller
             $data_horario = DataHorario::where('id_sala', $request->sala)
             ->where('status_datas_horarios', '1')
             ->where('data', '>=', date('Y-m-d'))
+            ->with('horarios', function($query){
+                $query->where('status_horarios_agendamentos', '1');
+            })
             ->get();
+
+            
+
 
             if(!$data_horario){
                 throw new \Exception('Nenhuma data encontrada!');
