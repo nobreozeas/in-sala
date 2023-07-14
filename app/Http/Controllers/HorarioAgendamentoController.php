@@ -30,7 +30,7 @@ class HorarioAgendamentoController extends Controller
             $verifica_data = DataHorario::whereDate('data', $request->data)
                 ->where('id_sala', $request->sala)
                 ->first();
-            if($verifica_data){
+            if ($verifica_data) {
                 throw new \Exception('Já existem horários para essa data!');
             }
 
@@ -66,36 +66,43 @@ class HorarioAgendamentoController extends Controller
     public function consultaData(Request $request)
     {
 
-        try{
+        try {
             $data_horario = DataHorario::where('id_sala', $request->sala)
-            ->where('status_datas_horarios', '1')
-            ->where('data', '>=', date('Y-m-d'))
-            ->with('horarios', function($query){
-                $query->where('status_horarios_agendamentos', '1');
-            })
-            ->get();
-
-            
+                ->where('status_datas_horarios', '1')
+                ->where('data', '>=', date('Y-m-d'))
+                ->with('horarios', function ($query) {
+                    $query->where('status_horarios_agendamentos', '1');
+                })
+                ->get();
 
 
-            if(!$data_horario){
+
+
+            if (!$data_horario) {
                 throw new \Exception('Nenhuma data encontrada!');
             }
 
             return response()->json(['datas' => $data_horario], 200);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['msg' => $e->getMessage()], 500);
         }
+    }
 
+    public function listar(Request $request)
+    {
 
+        $horarios = DataHorario::with('horarios')->with('sala')->select('datas_horarios.*');
+        $orders = [
+            'id',
+            'id_sala',
+            '',
+            '',
+            '',
+            '',
+        ];
 
+        $horarios = $horarios->orderBy($orders[$request->order[0]['column']], $request->order[0]['dir'])->paginate($request->length, ['*'], 'page', ($request->start / $request->length) + 1)->toArray();
 
-
-        // if ($data_horario) {
-        //     $horarios = HorarioAgendamento::where('id_data_horario', $data_horario->id)->get();
-        //     return response()->json(['horarios' => $horarios], 200);
-        // } else {
-        //     return response()->json(['horarios' => []], 200);
-        // }
+        return ["draw" => $request->draw, "recordsTotal" => (int) $horarios['to'], "recordsFiltered" => (int) $horarios['total'], "data" => $horarios["data"]];
     }
 }

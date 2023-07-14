@@ -10,7 +10,16 @@
         </nav>
 
         <div class="box_form">
-            <h3>Cadastrar Sala</h3>
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h3>Cadastrar Sala</h3>
+                </div>
+                <div class="d-flex">
+                    <a class="btn btn-secondary me-2" href="{{ route('salas.index') }}"><i class="fa fa-arrow-left me-2"
+                            aria-hidden="true"></i>Voltar</a>
+
+                </div>
+            </div>
             <form class="row g-3" action="" enctype="multipart/form-data">
                 @csrf
                 <div class="col-md-3">

@@ -136,4 +136,6 @@ class AgendamentoController extends Controller
             return response()->json(['msg' => 'Erro ao cancelar agendamento!'], 500);
         }
     }
+
+    
 }

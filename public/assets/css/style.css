@@ -78,7 +78,7 @@ body::-webkit-scrollbar-thumb {
 
 .dropdown-item:hover {
     color: #fff;
-    background-color: #4e73df;
+    background-color: #048BA8;
 }
 
 @media only screen and (max-width: 1400px) {

@@ -166,28 +166,22 @@
 
                             success: function(data) {
                                 console.log(data);
-                                // if (data.status == 'sucesso') {
-                                //     Swal.fire(
-                                //         'Removido!',
-                                //         'Registro removido com sucesso.',
-                                //         'success'
-                                //     );
-                                //     tabela.ajax.reload();
-                                // } else {
-                                //     Swal.fire(
-                                //         'Erro!',
-                                //         'Ocorreu um erro ao remover o registro.',
-                                //         'error'
-                                //     );
-                                // }
-                            },
-                            error: function(data) {
-                                console.log(data);
                                 Swal.fire(
-                                    'Erro!',
-                                    'Ocorreu um erro ao remover o registro.',
-                                    'error'
+                                    'Removido!',
+                                    'Registro removido com sucesso.',
+                                    'success'
                                 );
+                                tabela.draw();
+                            },
+                            error: function(error) {
+                                console.log(error);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops...',
+                                    text: error.responseJSON.msg,
+                                    confirmButtonColor: '#3085d6',
+
+                                })
                             }
                         });
                     }

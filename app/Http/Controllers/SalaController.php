@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agendamento;
+use App\Models\DataHorario;
+use App\Models\HorarioAgendamento;
 use App\Models\Sala;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -116,6 +119,31 @@ class SalaController extends Controller
             DB::rollback();
             return response()->json(['msg' => $e->getMessage()], 500);
         }
+
+
+    }
+
+    public function deletar($id){
+
+        //verifica se a sala esta sendo usada em algum agendamento ou horario
+        $agendamento = Agendamento::where('id_sala', $id)->first();
+        if($agendamento){
+            return response()->json(['msg' => 'Não é possível excluir essa sala, pois ela está sendo usada em um agendamento!'], 400);
+        }
+
+        $horario = DataHorario::where('id_sala', $id)->first();
+        if($horario){
+            return response()->json(['msg' => 'Não é possível excluir essa sala, pois ela está sendo usada em um horário!'], 400);
+        }
+
+        $sala = Sala::find($id);
+        if(!$sala){
+            return response()->json(['msg' => 'Sala não encontrada!'], 400);
+        }
+
+        $sala->delete();
+
+        return response()->json(['msg' => 'Sala excluída com sucesso!'], 200);
 
 
     }

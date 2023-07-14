@@ -10,10 +10,19 @@
         </nav>
 
         <div class="box_form">
-            <h3>Cadastrar Data e Horário</h3>
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h3>Cadastrar Data Horário</h3>
+                </div>
+                <div class="d-flex">
+                    <a class="btn btn-secondary me-2" href="{{ route('horarios.index') }}"><i
+                            class="fa fa-arrow-left me-2" aria-hidden="true"></i>Voltar</a>
+
+                </div>
+            </div>
             <form class="row g-3" action="">
                 @csrf
-                           <div class="col-md-6">
+                <div class="col-md-6">
                     <label for="sala" class="form-label">Sala</label>
                     <select name="sala" id="sala" class="form-select" required>
                         <option value="">Selecione</option>
@@ -42,10 +51,12 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-md-5">
-                            <input type="time" class="form-control input-number horario_inicial" name="horario_inicial[]" required>
+                            <input type="time" class="form-control input-number horario_inicial" name="horario_inicial[]"
+                                required>
                         </div>
                         <div class="col-md-5">
-                            <input type="time" class="form-control input-number horario_final" name="horario_final[]" required>
+                            <input type="time" class="form-control input-number horario_final" name="horario_final[]"
+                                required>
                         </div>
 
                     </div>
@@ -93,11 +104,11 @@
                 $(this).closest('.row').remove();
             });
 
-            $('body').on('change', '.horario_final', function(){
+            $('body').on('change', '.horario_final', function() {
                 let horario_inicial = $(this).closest('.row').find('.horario_inicial').val();
                 let horario_final = $(this).closest('.row').find('.horario_final').val();
 
-                if(horario_inicial > horario_final){
+                if (horario_inicial > horario_final) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro!',
@@ -108,7 +119,7 @@
                     });
                     $(this).closest('.row').find('.horario_final').val('');
                 }
-                if(horario_inicial == horario_final){
+                if (horario_inicial == horario_final) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro!',
@@ -195,7 +206,7 @@
                         });
 
                     },
-                    error: function(error){
+                    error: function(error) {
                         console.log(error);
                         Swal.fire({
                             icon: 'error',

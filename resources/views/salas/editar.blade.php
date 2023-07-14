@@ -15,7 +15,7 @@
                     <h3>Editar Sala</h3>
                 </div>
                 <div class="d-flex">
-                    <a class="btn btn-primary me-2" href="{{ route('salas.index') }}"><i class="fa fa-arrow-left me-2"
+                    <a class="btn btn-secondary me-2" href="{{ route('salas.index') }}"><i class="fa fa-arrow-left me-2"
                             aria-hidden="true"></i>Voltar</a>
 
                     <button class="btn btn-success" id="btn_edita"><i class="fa fa-pencil me-2" aria-hidden="true"></i>Editar</button>
